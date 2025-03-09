@@ -1,5 +1,7 @@
 # Proyecto Ingeniería de Software 2 - E-commerce
 
+![ecommerce-768x473](https://github.com/user-attachments/assets/5b93249d-6a88-4c84-9011-a35de35e6ce5)
+
 Asignatura:
 
 Ingeniería de Software II
