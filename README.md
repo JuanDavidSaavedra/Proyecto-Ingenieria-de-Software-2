@@ -24,3 +24,13 @@ Control de Versiones:
 Git GitHub
 
 Mockups y Prototipos:
+
+
+## Distribuibles:
+### Sprints:
+
+Sprint 0 - Grupo B:
+
+Backlog: https://www.notion.so/Sprint-0-Grupo-B-Proyecto-E-commerce-Ingenier-a-de-Software-II-25-de-febrero-11-de-marzo-1a97016e861d80f39c37d526ea4b22c0?pvs=4
+
+Historias de Usuario & Documento de Arquitectura: https://docs.google.com/document/d/1Pes0SW3duocOhsmgbAHuuF_dZigTwZS7ekwXPV7ECr0/edit?usp=sharing
