@@ -37,4 +37,4 @@ Backlog: https://www.notion.so/Sprint-0-Grupo-B-Proyecto-E-commerce-Ingenier-a-d
 
 Historias de Usuario: https://docs.google.com/document/d/1Pes0SW3duocOhsmgbAHuuF_dZigTwZS7ekwXPV7ECr0/edit?usp=sharing
 
-Documento de Arquitectura: 
+Documento de Arquitectura: https://docs.google.com/document/d/1FHYYW-qhqiEXfr3-2ML_er8SQ6CPBBDO_D7LfEwyWII/edit?usp=sharing
