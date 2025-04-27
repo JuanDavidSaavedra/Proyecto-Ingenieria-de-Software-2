@@ -58,5 +58,38 @@ public class ProductCacheController {
         }
     }
 
-
+    /**
+     * Endpoint para modificar la cantidad de un único producto en el carrito.
+     * Utiliza PATCH ya que es una actualización parcial del carrito.
+     *
+     * @param userId      Id del usuario (parámetro de consulta).
+     * @param productId   Id del producto a modificar (parámetro de consulta).
+     * @param quantity Nueva cantidad para el producto (parámetro de consulta).
+     * @return ResponseEntity con la lista actualizada del carrito (200 OK),
+     * o un estado de error (404 Not Found, 400 Bad Request, 500 Internal Server Error).
+     */
+    @PatchMapping("/product/quantity")
+    public ResponseEntity<?> updateSingleProductQuantity(@RequestParam String userId,
+                                                         @RequestParam Long productId,
+                                                         @RequestParam Integer quantity) {
+        try{
+            List<Product> updatedProducts = cacheService.updateProductQuantity(userId, productId, quantity);
+            return ResponseEntity.ok(updatedProducts);
+        } catch (NoSuchElementException e) {
+            // Ocurre si el carrito está vacío o el producto específico no se encuentra
+            LOGGER.warn("PATCH /product/quantity - User: {}, Product: {}, Quantity: {} - Not Found: {}",
+                    userId, productId, quantity, e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (IllegalArgumentException e) {
+            // Ocurre si newQuantity es negativa o userId es inválido
+            LOGGER.warn("PATCH /product/quantity - User: {}, Product: {}, Quantity: {} - Bad Request: {}",
+                    userId, productId, quantity, e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception e) {
+            // Otros errores inesperados
+            LOGGER.error("PATCH /product/quantity - User: {}, Product: {}, Quantity: {} - Internal Error: {}",
+                    userId, productId, quantity, e.getMessage(), e); // Loguea el stack trace
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An internal server error occurred.");
+        }
+    }
 }

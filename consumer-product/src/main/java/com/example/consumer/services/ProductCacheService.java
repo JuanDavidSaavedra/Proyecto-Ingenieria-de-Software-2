@@ -10,10 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -68,9 +65,8 @@ public class ProductCacheService {
      * más optimizada de la planteada al comienzo.
      *
      * <h2>Creación del Map<K, V></h2>
-     * Creamos un Map para la búsqueda de producto de manera eficuente.
-     * La clave será el id del producto y el valor el producto como tal,
-     *
+     * Creamos un Map para la búsqueda de producto de manera eficiente.
+     * La clave será Id del producto y el valor el producto como tal,
      * Obtenemos la lista de productos del usuario y lo convertimos a un strema
      * <blockquote><pre>
      * cart.getProducts().stream()
@@ -78,7 +74,7 @@ public class ProductCacheService {
      *
      * <p>
      *     Y utilizando el {@code .collect()} creamos una colección. Creamos un Map
-     *     con {@code Collectors.toMap()} dentro de los parametros le pasamos
+     *     con {@code Collectors.toMap()} dentro de los parámetros le pasamos
      *     la key y el value que van a tener.
      * </p>
      * <p>
@@ -87,12 +83,12 @@ public class ProductCacheService {
      *     es una versión más simplificada.
      * </p>
      *<p>
-     *     La expresión {@code Function.identity()} hace refenrecia a que estamos asigando
-     *     cada uno de los productos del parametro {@code cart} al valor del Map.
+     *     La expresión {@code Function.identity()} hace referencia a que estamos asignando
+     *     cada uno de los productos del parámetro {@code cart} al valor del Map.
      *     Que sería lo mismo colocar {@code product -> product}.
      *</p>
-     * @param cart
-     * @return
+     * @param cart carrito a actualizar.
+     * @return la lista de productos actualizada del carrito.
      */
     public List<Product> updateAmount(ShoppingCart cart) {
         String key = getKey(cart.getUserId());
@@ -117,17 +113,66 @@ public class ProductCacheService {
     }
 
     /**
-     * Crear una key única para usuario tanto anonimos como logeados
-     * Si el usuario es anonimo, dentro del id del objecto producto
-     * va a venir un id algo como "anonymous:DNLD13456461" para asigarle
-     * ese id como clave
-     * @param product Producto que llega desde el microservicio de Catalogo
-     * @return Una llave única para los usuarios tanto anonimos como logeados.
+     * <h1>Modificar la cantidad de un producto específico en el carrito</h1>
+     * Busca un producto por su ID en el carrito del usuario y actualiza su cantidad a la especificada.
+     *
+     * @param userId      Identificador del usuario.
+     * @param productId   Id del producto cuya cantidad se modificará.
+     * @param quantity La nueva cantidad para el producto (debe ser >= 0).
+     * @return La lista actualizada de productos en el carrito.
+     */
+    public List<Product> updateProductQuantity(String userId, Long productId, Integer quantity) {
+        // Validar la cantidad
+        if(quantity < 0) {
+            throw new IllegalArgumentException("Quantity cannot be negative");
+        } else if (quantity == 0) {
+            deleteProductById(userId, productId);
+            return getAllProducts(userId);
+        }
+
+        String key = getKey(userId);
+        List<Product> products = getProducts(key);
+        if(products.isEmpty()) {
+            throw new NoSuchElementException("Shopping cart is empty for user: " + userId);
+        }
+
+        // Buscar producto específico en la lista
+        Optional<Product> productToUpdate = products.stream()
+                .filter(p -> p.getId().equals(productId))
+                .findFirst();
+        if(productToUpdate.isPresent()) {
+            Product product = productToUpdate.get();
+            if(!product.getAmount().equals(quantity)) {
+                product.setAmount(quantity);
+                LOGGER.info("Updated quantity for product {} to {} for user {}", productId, quantity, userId);
+            } else {
+                LOGGER.info("Product {} already has quantity {}. No update needed for user {}.", productId, quantity, userId);
+            }
+        } else{ // Si el producto no se encontró en el carrito
+            throw new NoSuchElementException("Product with ID " + productId + " not found in cart for user: " + userId);
+        }
+        return products;
+    }
+
+    /**
+     * Crear una key única para usuario tanto anónimo como logueado
+     * Si el usuario es anónimo, dentro del Id del objeto producto
+     * va a venir Id algo como "anonymous:DNLD13456461" para asignarle
+     * ese ID como clave
+     * @param userId identificador del usuario. Producto que llega desde el microservicio de Catalogo
+     * @return Una llave única para los usuarios tanto anónimos como logueados.
      */
     private String getKey(String userId) {
         return "cart:" + userId;
     }
 
+    /**
+     * Obtiene la lista de productos para una clave dada desde Redis.
+     * Devuelve una lista vacía (nueva instancia) si no se encuentran productos
+     * o si la clave no existe, evitando NullPointerException.
+     * @param key La clave de Redis (e.g., "cart:userId123").
+     * @return Una Lista de Productos (nunca null).
+     */
     private List<Product> getProducts(String key) {
         List<Product> products = redisTemplate.opsForValue().get(key);
         return (products == null) ? new ArrayList<>() : products;
