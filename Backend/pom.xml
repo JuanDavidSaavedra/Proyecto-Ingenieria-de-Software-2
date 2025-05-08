@@ -9,14 +9,16 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>3.4.2</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <relativePath/>
     </parent>
 
-    <name>RabbitMQ_microservices_example</name>
-
-    <groupId>com.example.rabbitmq</groupId>
-    <artifactId>RabbitMQ_microservices_example</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <name>Platform E-commerce - Backend</name>
+    <groupId>co.edu.uis.sistemas.ecommerce</groupId>
+    <artifactId>ecommerce-parent</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <description>
+        Configuración genérica para los microservicios.
+    </description>
 
     <!--
      Le decimos a Maven, que este proyecto será el padre de
@@ -26,14 +28,14 @@
 
     <!-- Aquí estarán los microservicios -->
     <modules>
-        <module>publisher-product</module>
-        <module>consumer-product</module>
+        <module>shopping-cart</module>
     </modules>
 
     <properties>
-        <maven.compiler.source>23</maven.compiler.source>
-        <maven.compiler.target>23</maven.compiler.target>
+        <maven.compiler.source>24</maven.compiler.source>
+        <maven.compiler.target>24</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <org.mapstruct.version>1.6.3</org.mapstruct.version>
     </properties>
 
     <!-- Estas dependencias se heredarán para todos los microservicios -->
@@ -48,6 +50,12 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-amqp</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+            <version>${org.mapstruct.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -57,6 +65,24 @@
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-maven-plugin</artifactId>
                     <version>3.4.2</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.8.1</version>
+                    <configuration>
+                        <source>1.8</source> <!-- depending on your project -->
+                        <target>1.8</target> <!-- depending on your project -->
+                        <annotationProcessorPaths>
+                            <path>
+                                <groupId>org.mapstruct</groupId>
+                                <artifactId>mapstruct-processor</artifactId>
+                                <version>${org.mapstruct.version}</version>
+                            </path>
+                            <!-- other annotation processors -->
+                        </annotationProcessorPaths>
+                    </configuration>
                 </plugin>
             </plugins>
         </pluginManagement>
