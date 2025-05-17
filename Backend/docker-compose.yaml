@@ -1,0 +1,30 @@
+version: "3.8"
+services:
+  shopping-cart:
+    build: "./shopping-cart"
+    ports:
+      - "8085:8085"
+    depends_on:
+      - redis
+      - rabbitmq
+    networks:
+      - shopping
+
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
+    networks:
+      - shopping
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - shopping
+
+networks:
+  shopping:
+    driver: bridge
