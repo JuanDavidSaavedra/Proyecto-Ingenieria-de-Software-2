@@ -15,11 +15,14 @@ import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/shopping_cart")
-@RequiredArgsConstructor
 public class ProductCacheController {
 
     private final ShoppingCartService shoppingCartService;
     private static final Logger LOGGER = LoggerFactory.getLogger(ProductCacheController.class);
+
+    public ProductCacheController(ShoppingCartService shoppingCartService) {
+        this.shoppingCartService = shoppingCartService;
+    }
 
     @GetMapping("/{userId}")
     public ResponseEntity<ShoppingCartDTO> getCart(@PathVariable String userId) {

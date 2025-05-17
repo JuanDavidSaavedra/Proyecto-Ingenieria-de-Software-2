@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 
 @Service
-@RequiredArgsConstructor
 public class ProductCacheServiceImpl implements ShoppingCartService {
     // Constantes
     private static final Logger LOGGER = LoggerFactory.getLogger(ProductCacheServiceImpl.class);
@@ -23,6 +22,11 @@ public class ProductCacheServiceImpl implements ShoppingCartService {
     private final ProductMapper mapper;
     // Base de datos
     private final RedisTemplate<String, List<Product>> redisTemplate;
+
+    public ProductCacheServiceImpl(ProductMapper mapper, RedisTemplate<String, List<Product>> redisTemplate) {
+        this.mapper = mapper;
+        this.redisTemplate = redisTemplate;
+    }
 
     // --- Métodos funcionales ---
 
@@ -87,10 +91,10 @@ public class ProductCacheServiceImpl implements ShoppingCartService {
         List<Product> currentProductsInCart = getProductsFromRedis(key);
 
         if (currentProductsInCart.isEmpty() && !redisTemplate.hasKey(key)) { // Si no hay carrito previo
-            throw new NoSuchElementException("Shopping cart not found for user: " + shoppingCartDTO.getUserId() + ". Cannot update.");
+            throw new NoSuchElementException("Shopping cart not found for user: " + shoppingCartDTO.userID() + ". Cannot update.");
         }
 
-        List<Product> updatedProductsFromDTO = mapper.productDTOsToProducts(shoppingCartDTO.getProducts());
+        List<Product> updatedProductsFromDTO = mapper.productDTOsToProducts(shoppingCartDTO.products());
 
         // Lógica de actualización: Reemplazar la lista o hacer un merge más inteligente.
         // Esta es una simple sustitución de la lista de productos del carrito:

@@ -18,10 +18,21 @@
         </processorPath>
         <module name="microservicio-carrito" />
       </profile>
+      <profile name="Annotation profile for shopping-cart" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$MAVEN_REPOSITORY$/org/mapstruct/mapstruct-processor/1.6.3/mapstruct-processor-1.6.3.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/mapstruct/mapstruct/1.6.3/mapstruct-1.6.3.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/mapstruct/mapstruct-processor/1.6.3/mapstruct-processor-1.6.3.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/mapstruct/mapstruct/1.6.3/mapstruct-1.6.3.jar" />
+        </processorPath>
+        <module name="shopping-cart" />
+      </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="publisher-product" target="1.8" />
-      <module name="shopping-cart" target="1.8" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
