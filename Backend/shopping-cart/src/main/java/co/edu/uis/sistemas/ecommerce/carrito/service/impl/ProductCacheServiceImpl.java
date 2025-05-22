@@ -6,18 +6,19 @@ import co.edu.uis.sistemas.ecommerce.carrito.model.Product;
 import co.edu.uis.sistemas.ecommerce.carrito.dtos.ProductDTO;
 import co.edu.uis.sistemas.ecommerce.carrito.dtos.ShoppingCartDTO;
 import co.edu.uis.sistemas.ecommerce.carrito.service.ShoppingCartService;
-import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.util.*;
 
 @Service
 public class ProductCacheServiceImpl implements ShoppingCartService {
     // Constantes
     private static final Logger LOGGER = LoggerFactory.getLogger(ProductCacheServiceImpl.class);
+    private static final long CART_TTL_MINUTES = 2;
     // Dependencias
     private final ProductMapper mapper;
     // Base de datos
@@ -61,6 +62,7 @@ public class ProductCacheServiceImpl implements ShoppingCartService {
         String key = getKey(userId);
         List<Product> productsInCart = getProductsFromRedis(key);
         if (productsInCart.isEmpty() && !redisTemplate.hasKey(key)) { // Distinguir carrito vacío de usuario sin carrito
+            redisTemplate.expire(key, Duration.ofMinutes(CART_TTL_MINUTES));
             throw new NoSuchElementException("Shopping cart not found or is empty for user: " + userId);
         }
         List<ProductDTO> productDTOs = mapper.productsToProductDTOs(productsInCart);

@@ -1,5 +1,6 @@
 package co.edu.uis.sistemas.ecommerce.carrito.service;
 
+
 import co.edu.uis.sistemas.ecommerce.carrito.dtos.ProductDTO;
 import co.edu.uis.sistemas.ecommerce.carrito.dtos.ShoppingCartDTO;
 
@@ -13,4 +14,6 @@ public interface ShoppingCartService {
     void emptyCartByUserId(String userId);
     ShoppingCartDTO updateCartProducts(ShoppingCartDTO shoppingCartDTO);
     ShoppingCartDTO updateProductQuantityInCart(String userId, Long productId, Integer quantity);
+
 }
+
