@@ -7,7 +7,7 @@ Cada microservicio es un módulo Maven independiente dentro del proyecto padre y
 
 ## 2. Estructura General de un Microservicio (Módulo Maven)
 
-A continuación, se presenta la estructura de directorios típica para un microservicio Spring Boot:
+A continuación, se presenta la estructura de directorios típica para un microservicio Spring-Boot:
 
 ````
 [nombre-del-microservicio]/  (Ej: microservicio-carrito, microservicio-seguridad)
